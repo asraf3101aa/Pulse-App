@@ -11,39 +11,45 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { PulseLogo } from 'components/PulseLogo';
-import { User, Lock, Eye, EyeOff, ArrowRight, Chrome, Apple } from 'lucide-react-native';
-import { loginSchema } from 'api/validation';
+import { User, Lock, Eye, EyeOff, ArrowRight, Apple } from 'lucide-react-native';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, LoginInput } from 'api/validation';
+import { Colors } from 'constants/Colors';
+import { useAuth } from 'hooks/useAuth';
+import { handleApiFormError } from 'utils/formErrors';
+import { FormFieldError } from 'components/FormFieldError';
 
 interface LoginScreenProps {
-    onLogin?: (identifier: string, password?: string) => void;
     onGoToRegister?: () => void;
-    isLoading?: boolean;
-    error?: string;
-    fieldErrors?: Record<string, string[]>;
 }
 
-const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErrors }: LoginScreenProps) => {
-    const [identifier, setIdentifier] = useState('');
-    const [password, setPassword] = useState('');
+const PulseLoginScreen = ({ onGoToRegister }: LoginScreenProps) => {
+    const { login, loginMutation } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
-    const [localErrors, setLocalErrors] = useState<Record<string, string[]>>({});
 
-    const handleLogin = () => {
-        setLocalErrors({});
-        const result = loginSchema.safeParse({ identifier, password });
+    const isLoading = loginMutation.isPending;
 
-        if (!result.success) {
-            const formattedErrors: Record<string, string[]> = {};
-            result.error.issues.forEach((issue) => {
-                const path = issue.path[0] as string;
-                if (!formattedErrors[path]) formattedErrors[path] = [];
-                formattedErrors[path].push(issue.message);
-            });
-            setLocalErrors(formattedErrors);
-            return;
-        }
+    const {
+        control,
+        handleSubmit,
+        setError,
+        clearErrors,
+        formState: { errors: formErrors },
+    } = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema),
+        criteriaMode: 'all',
+        defaultValues: {
+            identifier: '',
+            password: '',
+        },
+    });
 
-        if (onLogin) onLogin(identifier, password);
+    const onSubmit = (data: LoginInput) => {
+        clearErrors();
+        login(data, {
+            onError: (error) => handleApiFormError(error, setError, 'Login failed'),
+        });
     };
 
     const handleGoogleLogin = () => {
@@ -54,7 +60,9 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
         console.log('Apple login pressed');
     };
 
-    const getFieldError = (key: string) => localErrors[key]?.[0] || fieldErrors?.[key]?.[0];
+    const getFieldError = (key: keyof LoginInput) => {
+        return formErrors[key];
+    };
 
     return (
         <KeyboardAvoidingView
@@ -62,20 +70,20 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
             className="flex-1"
         >
             <ScrollView
-                className="flex-1 bg-[#f6f7f8] dark:bg-[#0a0a0c]"
+                className="flex-1 bg-pulse-desertStorm dark:bg-pulse-night"
                 contentContainerStyle={{ flexGrow: 1 }}
             >
                 <View className="flex-1 px-6 py-12 relative">
                     {/* Background Blur Effects */}
-                    <View className="absolute -top-24 -right-24 w-64 h-64 bg-[#4169E1]/15 rounded-full" style={{ opacity: 0.5 }} />
-                    <View className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#4169E1]/10 rounded-full" style={{ opacity: 0.5 }} />
+                    <View className="absolute -top-24 -right-24 w-64 h-64 bg-pulse-ultramarineBlue/15 rounded-full" style={{ opacity: 0.5 }} />
+                    <View className="absolute -bottom-24 -left-24 w-64 h-64 bg-pulse-ultramarineBlue/10 rounded-full" style={{ opacity: 0.5 }} />
 
                     {/* Content Container */}
                     <View className="flex-1 max-w-[400px] w-full mx-auto justify-between">
                         {/* Logo and Title Section */}
                         <View className="items-center text-center z-10">
-                            <View className="w-20 h-20 bg-[#4169E1]/20 rounded-2xl items-center justify-center mb-6">
-                                <View className="w-14 h-14 bg-[#4169E1] rounded-xl items-center justify-center">
+                            <View className="w-20 h-20 bg-pulse-ultramarineBlue/20 rounded-2xl items-center justify-center mb-6">
+                                <View className="w-14 h-14 bg-pulse-ultramarineBlue rounded-xl items-center justify-center">
                                     <PulseLogo />
                                 </View>
                             </View>
@@ -97,26 +105,27 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
                                     </Text>
                                     <View className="relative">
                                         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                            <User size={18} color="#94a3b8" />
+                                            <User size={18} color={Colors.pulse.muted} />
                                         </View>
-                                        <TextInput
-                                            className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('identifier') ? 'border-red-500/50' : 'border-slate-200 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
-                                            placeholder="Email or Username"
-                                            placeholderTextColor="#415771"
-                                            value={identifier}
-                                            onChangeText={setIdentifier}
-                                            autoCapitalize="none"
-                                            keyboardType="email-address"
-                                            editable={!isLoading}
+                                        <Controller
+                                            control={control}
+                                            name="identifier"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <TextInput
+                                                    className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('identifier') ? 'border-red-500/50' : 'border-slate-200 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
+                                                    placeholder="Email or Username"
+                                                    placeholderTextColor={Colors.pulse.dusk}
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    autoCapitalize="none"
+                                                    keyboardType="email-address"
+                                                    editable={!isLoading}
+                                                />
+                                            )}
                                         />
                                     </View>
-                                    <View className="min-h-[20px] mt-1 ml-1 justify-center">
-                                        {getFieldError('identifier') && (
-                                            <Text className="text-red-500 text-[11px] font-semibold">
-                                                {getFieldError('identifier')}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    <FormFieldError error={getFieldError('identifier')} />
                                 </View>
 
                                 {/* Password Input */}
@@ -126,23 +135,30 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
                                             Password
                                         </Text>
                                         <TouchableOpacity disabled={isLoading}>
-                                            <Text className="text-xs font-bold text-[#4169E1]">
+                                            <Text className="text-xs font-bold text-pulse-ultramarineBlue">
                                                 Forgot Password?
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
                                     <View className="relative">
                                         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                            <Lock size={18} color="#94a3b8" />
+                                            <Lock size={18} color={Colors.pulse.muted} />
                                         </View>
-                                        <TextInput
-                                            className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('password') ? 'border-red-500/50' : 'border-slate-200 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-12 text-slate-900 dark:text-slate-100`}
-                                            placeholder="••••••••"
-                                            placeholderTextColor="#415771"
-                                            value={password}
-                                            onChangeText={setPassword}
-                                            secureTextEntry={!showPassword}
-                                            editable={!isLoading}
+                                        <Controller
+                                            control={control}
+                                            name="password"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <TextInput
+                                                    className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('password') ? 'border-red-500/50' : 'border-slate-200 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-12 text-slate-900 dark:text-slate-100`}
+                                                    placeholder="••••••••"
+                                                    placeholderTextColor={Colors.pulse.dusk}
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    secureTextEntry={!showPassword}
+                                                    editable={!isLoading}
+                                                />
+                                            )}
                                         />
                                         <TouchableOpacity
                                             className="absolute right-4 top-1/2 -translate-y-1/2"
@@ -150,36 +166,30 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
                                             disabled={isLoading}
                                         >
                                             {showPassword ? (
-                                                <Eye size={18} color="#94a3b8" />
+                                                <Eye size={18} color={Colors.pulse.muted} />
                                             ) : (
-                                                <EyeOff size={18} color="#94a3b8" />
+                                                <EyeOff size={18} color={Colors.pulse.muted} />
                                             )}
                                         </TouchableOpacity>
                                     </View>
-                                    <View className="min-h-[20px] mt-1 ml-1 justify-center">
-                                        {getFieldError('password') && (
-                                            <Text className="text-red-500 text-[11px] font-semibold">
-                                                {getFieldError('password')}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    <FormFieldError error={getFieldError('password')} />
                                 </View>
 
-                                {error && (
+                                {formErrors.root && (
                                     <View className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 p-4 rounded-xl mt-4 flex-row items-center">
                                         <View className="w-5 h-5 bg-red-500 rounded-full items-center justify-center mr-3">
                                             <Text className="text-white text-[10px] font-bold">!</Text>
                                         </View>
                                         <Text className="text-red-600 dark:text-red-400 text-sm font-medium flex-1">
-                                            {error}
+                                            {formErrors.root.message}
                                         </Text>
                                     </View>
                                 )}
 
                                 {/* Login Button */}
                                 <TouchableOpacity
-                                    className={`w-full ${isLoading ? 'bg-[#4169E1]/70' : 'bg-[#4169E1]'} rounded-xl py-4 mt-4 flex-row items-center justify-center shadow-lg active:opacity-90`}
-                                    onPress={handleLogin}
+                                    className={`w-full ${isLoading ? 'bg-pulse-ultramarineBlue/70' : 'bg-pulse-ultramarineBlue'} rounded-xl py-4 mt-4 flex-row items-center justify-center shadow-lg active:opacity-90`}
+                                    onPress={handleSubmit(onSubmit)}
                                     activeOpacity={0.8}
                                     disabled={isLoading}
                                 >
@@ -229,7 +239,7 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
                                         onPress={handleAppleLogin}
                                         activeOpacity={0.7}
                                     >
-                                        <Apple size={20} color="#94a3b8" />
+                                        <Apple size={20} color={Colors.pulse.muted} />
                                         <Text className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                                             Apple
                                         </Text>
@@ -245,7 +255,7 @@ const PulseLoginScreen = ({ onLogin, onGoToRegister, isLoading, error, fieldErro
                                     New to Pulse?{' '}
                                 </Text>
                                 <TouchableOpacity onPress={onGoToRegister}>
-                                    <Text className="text-[#4169E1] font-bold text-sm">
+                                    <Text className="text-pulse-ultramarineBlue font-bold text-sm">
                                         Sign Up Now
                                     </Text>
                                 </TouchableOpacity>

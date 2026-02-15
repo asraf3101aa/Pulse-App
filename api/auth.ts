@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import { ApiResponse, AuthResponse, LoginCredentials, RegisterCredentials, User } from './types';
+import { AuthResponse, AuthTokens, LoginCredentials, RegisterCredentials, User } from './types';
 
 export const authApi = {
     login: (credentials: LoginCredentials) =>
@@ -12,12 +12,17 @@ export const authApi = {
             .post<AuthResponse>('/auth/register', credentials)
             .then((res) => res.data),
 
-    getMe: (token: string) =>
+    getMe: (token?: string) =>
         apiClient
-            .get<ApiResponse<User>>('/auth/me', {
+            .get<User>('/auth/me', token ? {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            })
+            } : {})
+            .then((res) => res.data),
+
+    refresh: (refreshToken: string) =>
+        apiClient
+            .post<AuthTokens>('/auth/refresh', { refreshToken })
             .then((res) => res.data),
 };

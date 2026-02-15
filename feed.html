@@ -1,0 +1,288 @@
+<html class="dark" lang="en">
+
+<head>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 flex justify-center">```html
+
+
+
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pulse Home Feed - Indigo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169E1",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0a0a0c",
+                        "surface-dark": "#121214",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            --primary-color: #4169E1;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .speech-pulse-logo svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+
+
+    <div
+        class="w-full max-w-[428px] h-screen bg-background-light dark:bg-background-dark flex flex-col relative overflow-hidden shadow-2xl border-x border-slate-200 dark:border-slate-800">
+        <header
+            class="sticky top-0 z-30 w-full px-6 py-4 flex items-center justify-between ios-blur bg-white/80 dark:bg-background-dark/80 border-b border-slate-200 dark:border-slate-800/50">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center speech-pulse-logo">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M21 11.5C21 15.5867 17.866 18.9 14 18.9C13.2044 18.9 12.4431 18.7562 11.7419 18.4912L10 20L8.25814 18.4912C4.13399 18.9 1 15.5867 1 11.5C1 7.4133 4.13399 4.1 8 4.1H14C17.866 4.1 21 7.4133 21 11.5Z">
+                        </path>
+                        <path d="M7 11.5H9L10 13.5L12 9.5L13 11.5H15"></path>
+                    </svg>
+                </div>
+                <span
+                    class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Pulse</span>
+            </div>
+            <button class="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/20 p-0.5">
+                <div class="w-full h-full rounded-full bg-slate-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-300 text-lg">person</span>
+                </div>
+            </button>
+        </header>
+        <main class="flex-grow overflow-y-auto hide-scrollbar pb-24">
+            <div class="flex border-b border-slate-200 dark:border-slate-800">
+                <button class="flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary">For You</button>
+                <button
+                    class="flex-1 py-4 text-sm font-semibold text-slate-500 hover:text-slate-300 transition-colors">Following</button>
+            </div>
+            <article
+                class="p-4 border-b border-slate-200 dark:border-slate-800/60 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-11 h-11 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-indigo-400">face</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-[15px]">Alex Rivera</span>
+                                <span class="material-symbols-outlined text-primary text-[16px] fill-1">verified</span>
+                                <span class="text-slate-500 dark:text-slate-500 text-sm">@arivera • 2h</span>
+                            </div>
+                            <button class="text-slate-500"><span
+                                    class="material-symbols-outlined text-lg">more_horiz</span></button>
+                        </div>
+                        <div class="mb-3">
+                            <h3 class="text-[17px] font-bold text-slate-900 dark:text-white mb-1">New Pulse Design
+                                System</h3>
+                            <p class="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-normal">
+                                Just explored the new Pulse design system. The indigo accent feels so much more premium.
+                                What do you guys think about the new thread interactions? 🚀
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between max-w-xs text-slate-500 dark:text-slate-400">
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">chat_bubble</span>
+                                <span class="text-xs font-medium">12</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-green-500 transition-colors">repeat</span>
+                                <span class="text-xs font-medium">4</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group text-primary">
+                                <span class="material-symbols-outlined text-[20px] fill-1">favorite</span>
+                                <span class="text-xs font-medium">84</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article
+                class="p-4 border-b border-slate-200 dark:border-slate-800/60 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-11 h-11 rounded-full bg-rose-500/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-rose-400">palette</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-[15px]">Sarah Chen</span>
+                                <span class="text-slate-500 dark:text-slate-500 text-sm">@sarah_c • 5h</span>
+                            </div>
+                            <button class="text-slate-500"><span
+                                    class="material-symbols-outlined text-lg">more_horiz</span></button>
+                        </div>
+                        <div class="mb-3">
+                            <h3 class="text-[17px] font-bold text-slate-900 dark:text-white mb-1">Smooth iOS Animations
+                            </h3>
+                            <p class="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-normal">
+                                Can we talk about how smooth the iOS scroll physics feel in this update? The "Indigo
+                                Variant" is definitely my favorite so far. #Design #UIUX
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between max-w-xs text-slate-500 dark:text-slate-400">
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">chat_bubble</span>
+                                <span class="text-xs font-medium">28</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-green-500 transition-colors">repeat</span>
+                                <span class="text-xs font-medium">15</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">favorite</span>
+                                <span class="text-xs font-medium">156</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article
+                class="p-4 border-b border-slate-200 dark:border-slate-800/60 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-11 h-11 rounded-full bg-amber-500/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-amber-400">auto_awesome</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-[15px]">Marcus Wright</span>
+                                <span class="text-slate-500 dark:text-slate-500 text-sm">@mwright • 8h</span>
+                            </div>
+                            <button class="text-slate-500"><span
+                                    class="material-symbols-outlined text-lg">more_horiz</span></button>
+                        </div>
+                        <div class="mb-3">
+                            <h3 class="text-[17px] font-bold text-slate-900 dark:text-white mb-1">Dark Mode Vibes</h3>
+                            <p class="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 font-normal mb-3">
+                                Late night coding sessions hit different with this dark theme. 💻✨
+                            </p>
+                            <div
+                                class="w-full h-48 bg-slate-800 rounded-2xl overflow-hidden border border-slate-700/50 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-slate-600 text-4xl">image</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between max-w-xs text-slate-500 dark:text-slate-400">
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">chat_bubble</span>
+                                <span class="text-xs font-medium">5</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-green-500 transition-colors">repeat</span>
+                                <span class="text-xs font-medium">2</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">favorite</span>
+                                <span class="text-xs font-medium">42</span>
+                            </button>
+                            <button class="flex items-center gap-1.5 group">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </main>
+        <button
+            class="absolute bottom-24 right-6 w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/30 flex items-center justify-center text-white active:scale-95 transition-transform z-40">
+            <span class="material-symbols-outlined text-2xl font-bold">add</span>
+        </button>
+        <nav
+            class="absolute bottom-0 w-full h-20 ios-blur bg-white/80 dark:bg-background-dark/80 border-t border-slate-200 dark:border-slate-800/50 flex items-center justify-around px-4 pb-4">
+            <button class="flex flex-col items-center gap-0.5 text-primary">
+                <span class="material-symbols-outlined text-[28px] fill-1">home</span>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 text-slate-400">
+                <span class="material-symbols-outlined text-[28px]">search</span>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 text-slate-400 relative">
+                <span class="material-symbols-outlined text-[28px]">notifications</span>
+                <div class="absolute top-0.5 right-0.5 w-2 h-2 bg-primary rounded-full border-2 border-background-dark">
+                </div>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 text-slate-400">
+                <span class="material-symbols-outlined text-[28px]">mail</span>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 text-slate-400">
+                <span class="material-symbols-outlined text-[28px]">person</span>
+            </button>
+        </nav>
+        <div
+            class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-slate-800 dark:bg-white/10 rounded-full opacity-50 z-50">
+        </div>
+    </div>
+
+</body>
+
+</html>

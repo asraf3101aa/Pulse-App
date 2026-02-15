@@ -16,3 +16,10 @@ export const registerSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const threadSchema = z.object({
+    title: z.string().min(1, "Title is required").max(100, "Title is too long"),
+    content: z.string().min(1, "Content is required").max(1000, "Content is too long"),
+});
+
+export type ThreadInput = z.infer<typeof threadSchema>;

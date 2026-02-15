@@ -12,55 +12,53 @@ import {
 } from 'react-native';
 import { PulseLogo } from 'components/PulseLogo';
 import { User, Mail, Lock, Phone, Eye, EyeOff, ArrowRight, AtSign } from 'lucide-react-native';
-import { registerSchema } from 'api/validation';
-import { RegisterCredentials } from 'api/types';
+import { Colors } from 'constants/Colors';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema, RegisterInput } from 'api/validation';
+import { useAuth } from 'hooks/useAuth';
+import { handleApiFormError } from 'utils/formErrors';
+import { FormFieldError } from 'components/FormFieldError';
 
 interface RegisterScreenProps {
-    onRegister?: (data: RegisterCredentials) => void;
     onGoToLogin?: () => void;
-    isLoading?: boolean;
-    error?: string;
-    fieldErrors?: Record<string, string[]>;
 }
 
-const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors }: RegisterScreenProps) => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
+const RegisterScreen = ({ onGoToLogin }: RegisterScreenProps) => {
+    const { register, registerMutation } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
-    const [localErrors, setLocalErrors] = useState<Record<string, string[]>>({});
 
-    const handleRegister = () => {
-        setLocalErrors({});
-        const data: RegisterCredentials = {
-            username,
-            email,
-            password,
-            firstName,
-            lastName: lastName || undefined,
-            phoneNumber: phoneNumber || undefined,
-        };
+    const isLoading = registerMutation.isPending;
 
-        const result = registerSchema.safeParse(data);
+    const {
+        control,
+        handleSubmit,
+        setError,
+        clearErrors,
+        formState: { errors: formErrors },
+    } = useForm<RegisterInput>({
+        resolver: zodResolver(registerSchema),
+        criteriaMode: 'all',
+        defaultValues: {
+            username: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
+            password: '',
+        },
+    });
 
-        if (!result.success) {
-            const formattedErrors: Record<string, string[]> = {};
-            result.error.issues.forEach((issue) => {
-                const path = issue.path[0] as string;
-                if (!formattedErrors[path]) formattedErrors[path] = [];
-                formattedErrors[path].push(issue.message);
-            });
-            setLocalErrors(formattedErrors);
-            return;
-        }
-
-        if (onRegister) onRegister(data);
+    const onSubmit = (data: RegisterInput) => {
+        clearErrors();
+        register(data, {
+            onError: (error) => handleApiFormError(error, setError, 'Registration failed'),
+        });
     };
 
-    const getFieldError = (key: string) => localErrors[key]?.[0] || fieldErrors?.[key]?.[0];
+    const getFieldError = (key: keyof RegisterInput) => {
+        return formErrors[key];
+    };
 
     return (
         <KeyboardAvoidingView
@@ -68,19 +66,19 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
             className="flex-1"
         >
             <ScrollView
-                className="flex-1 bg-[#f6f7f8] dark:bg-[#0a0a0c]"
+                className="flex-1 bg-pulse-desertStorm dark:bg-pulse-night"
                 contentContainerStyle={{ flexGrow: 1 }}
             >
                 <View className="flex-1 px-6 py-12 relative">
                     {/* Background Blur Effects */}
-                    <View className="absolute -top-24 -right-24 w-64 h-64 bg-[#4169E1]/15 rounded-full" style={{ opacity: 0.5 }} />
-                    <View className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#4169E1]/10 rounded-full" style={{ opacity: 0.5 }} />
+                    <View className="absolute -top-24 -right-24 w-64 h-64 bg-pulse-ultramarineBlue/15 rounded-full" style={{ opacity: 0.5 }} />
+                    <View className="absolute -bottom-24 -left-24 w-64 h-64 bg-pulse-ultramarineBlue/10 rounded-full" style={{ opacity: 0.5 }} />
 
                     <View className="flex-1 max-w-[400px] w-full mx-auto justify-between">
                         {/* Logo and Title Section */}
                         <View className="items-center text-center z-10">
-                            <View className="w-18 h-18 bg-[#4169E1]/18 rounded-2xl items-center justify-center mb-6">
-                                <View className="w-14 h-14 bg-[#4169E1] rounded-xl items-center justify-center">
+                            <View className="w-18 h-18 bg-pulse-ultramarineBlue/18 rounded-2xl items-center justify-center mb-6">
+                                <View className="w-14 h-14 bg-pulse-ultramarineBlue rounded-xl items-center justify-center">
                                     <PulseLogo />
                                 </View>
                             </View>
@@ -103,24 +101,25 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                         </Text>
                                         <View className="relative">
                                             <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                                <User size={18} color="#94a3b8" />
+                                                <User size={18} color={Colors.pulse.muted} />
                                             </View>
-                                            <TextInput
-                                                className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('firstName') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
-                                                placeholder="John"
-                                                placeholderTextColor="#415771"
-                                                value={firstName}
-                                                onChangeText={setFirstName}
-                                                editable={!isLoading}
+                                            <Controller
+                                                control={control}
+                                                name="firstName"
+                                                render={({ field: { onChange, onBlur, value } }) => (
+                                                    <TextInput
+                                                        className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('firstName') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
+                                                        placeholder="John"
+                                                        placeholderTextColor={Colors.pulse.dusk}
+                                                        value={value}
+                                                        onChangeText={onChange}
+                                                        onBlur={onBlur}
+                                                        editable={!isLoading}
+                                                    />
+                                                )}
                                             />
                                         </View>
-                                        <View className="min-h-[18px] mt-1 ml-1 justify-center">
-                                            {getFieldError('firstName') && (
-                                                <Text className="text-red-500 text-[10px] font-semibold">
-                                                    {getFieldError('firstName')}
-                                                </Text>
-                                            )}
-                                        </View>
+                                        <FormFieldError error={getFieldError('firstName')} />
                                     </View>
                                     <View className="flex-1">
                                         <Text className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-widest mb-2 ml-1">
@@ -128,18 +127,25 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                         </Text>
                                         <View className="relative">
                                             <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                                <User size={18} color="#94a3b8" />
+                                                <User size={18} color={Colors.pulse.muted} />
                                             </View>
-                                            <TextInput
-                                                className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('lastName') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
-                                                placeholder="Doe"
-                                                placeholderTextColor="#415771"
-                                                value={lastName}
-                                                onChangeText={setLastName}
-                                                editable={!isLoading}
+                                            <Controller
+                                                control={control}
+                                                name="lastName"
+                                                render={({ field: { onChange, onBlur, value } }) => (
+                                                    <TextInput
+                                                        className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('lastName') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
+                                                        placeholder="Doe"
+                                                        placeholderTextColor={Colors.pulse.dusk}
+                                                        value={value}
+                                                        onChangeText={onChange}
+                                                        onBlur={onBlur}
+                                                        editable={!isLoading}
+                                                    />
+                                                )}
                                             />
                                         </View>
-                                        <View className="min-h-[18px] mt-1 ml-1" />
+                                        <FormFieldError error={getFieldError('lastName')} />
                                     </View>
                                 </View>
 
@@ -150,25 +156,26 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                     </Text>
                                     <View className="relative">
                                         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                            <AtSign size={18} color="#94a3b8" />
+                                            <AtSign size={18} color={Colors.pulse.muted} />
                                         </View>
-                                        <TextInput
-                                            className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('username') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
-                                            placeholder="johndoe"
-                                            placeholderTextColor="#415771"
-                                            value={username}
-                                            onChangeText={setUsername}
-                                            autoCapitalize="none"
-                                            editable={!isLoading}
+                                        <Controller
+                                            control={control}
+                                            name="username"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <TextInput
+                                                    className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('username') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
+                                                    placeholder="johndoe"
+                                                    placeholderTextColor={Colors.pulse.dusk}
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    autoCapitalize="none"
+                                                    editable={!isLoading}
+                                                />
+                                            )}
                                         />
                                     </View>
-                                    <View className="min-h-[18px] mt-1 ml-1 justify-center">
-                                        {getFieldError('username') && (
-                                            <Text className="text-red-500 text-[10px] font-semibold">
-                                                {getFieldError('username')}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    <FormFieldError error={getFieldError('username')} />
                                 </View>
 
                                 {/* Email Input */}
@@ -178,26 +185,27 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                     </Text>
                                     <View className="relative">
                                         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                            <Mail size={18} color="#94a3b8" />
+                                            <Mail size={18} color={Colors.pulse.muted} />
                                         </View>
-                                        <TextInput
-                                            className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('email') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
-                                            placeholder="john@example.com"
-                                            placeholderTextColor="#415771"
-                                            value={email}
-                                            onChangeText={setEmail}
-                                            autoCapitalize="none"
-                                            keyboardType="email-address"
-                                            editable={!isLoading}
+                                        <Controller
+                                            control={control}
+                                            name="email"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <TextInput
+                                                    className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('email') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
+                                                    placeholder="john@example.com"
+                                                    placeholderTextColor={Colors.pulse.dusk}
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    autoCapitalize="none"
+                                                    keyboardType="email-address"
+                                                    editable={!isLoading}
+                                                />
+                                            )}
                                         />
                                     </View>
-                                    <View className="min-h-[18px] mt-1 ml-1 justify-center">
-                                        {getFieldError('email') && (
-                                            <Text className="text-red-500 text-[10px] font-semibold">
-                                                {getFieldError('email')}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    <FormFieldError error={getFieldError('email')} />
                                 </View>
 
                                 {/* Phone Input */}
@@ -207,25 +215,26 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                     </Text>
                                     <View className="relative">
                                         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                            <Phone size={18} color="#94a3b8" />
+                                            <Phone size={18} color={Colors.pulse.muted} />
                                         </View>
-                                        <TextInput
-                                            className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('phoneNumber') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
-                                            placeholder="+1 234 567 890"
-                                            placeholderTextColor="#415771"
-                                            value={phoneNumber}
-                                            onChangeText={setPhoneNumber}
-                                            keyboardType="phone-pad"
-                                            editable={!isLoading}
+                                        <Controller
+                                            control={control}
+                                            name="phoneNumber"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <TextInput
+                                                    className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('phoneNumber') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-slate-100`}
+                                                    placeholder="+1 234 567 890"
+                                                    placeholderTextColor={Colors.pulse.dusk}
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    keyboardType="phone-pad"
+                                                    editable={!isLoading}
+                                                />
+                                            )}
                                         />
                                     </View>
-                                    <View className="min-h-[18px] mt-1 ml-1 justify-center">
-                                        {getFieldError('phoneNumber') && (
-                                            <Text className="text-red-500 text-[10px] font-semibold">
-                                                {getFieldError('phoneNumber')}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    <FormFieldError error={getFieldError('phoneNumber')} />
                                 </View>
 
                                 {/* Password Input */}
@@ -235,16 +244,23 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                     </Text>
                                     <View className="relative">
                                         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-                                            <Lock size={18} color="#94a3b8" />
+                                            <Lock size={18} color={Colors.pulse.muted} />
                                         </View>
-                                        <TextInput
-                                            className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('password') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-12 text-slate-900 dark:text-slate-100`}
-                                            placeholder="••••••••"
-                                            placeholderTextColor="#415771"
-                                            value={password}
-                                            onChangeText={setPassword}
-                                            secureTextEntry={!showPassword}
-                                            editable={!isLoading}
+                                        <Controller
+                                            control={control}
+                                            name="password"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <TextInput
+                                                    className={`w-full bg-white dark:bg-slate-900/50 border ${getFieldError('password') ? 'border-red-500/50' : 'border-slate-180 dark:border-slate-800'} rounded-xl py-4 pl-12 pr-12 text-slate-900 dark:text-slate-100`}
+                                                    placeholder="••••••••"
+                                                    placeholderTextColor={Colors.pulse.dusk}
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    secureTextEntry={!showPassword}
+                                                    editable={!isLoading}
+                                                />
+                                            )}
                                         />
                                         <TouchableOpacity
                                             className="absolute right-4 top-1/2 -translate-y-1/2"
@@ -252,36 +268,30 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                             disabled={isLoading}
                                         >
                                             {showPassword ? (
-                                                <Eye size={18} color="#94a3b8" />
+                                                <Eye size={18} color={Colors.pulse.muted} />
                                             ) : (
-                                                <EyeOff size={18} color="#94a3b8" />
+                                                <EyeOff size={18} color={Colors.pulse.muted} />
                                             )}
                                         </TouchableOpacity>
                                     </View>
-                                    <View className="min-h-[18px] mt-1 ml-1 justify-center">
-                                        {getFieldError('password') && (
-                                            <Text className="text-red-500 text-[10px] font-semibold">
-                                                {getFieldError('password')}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    <FormFieldError error={getFieldError('password')} />
                                 </View>
 
-                                {error && (
+                                {formErrors.root && (
                                     <View className="bg-red-50 dark:bg-red-900/18 border border-red-180 dark:border-red-800/50 p-4 rounded-xl mt-4 flex-row items-center">
                                         <View className="w-5 h-5 bg-red-500 rounded-full items-center justify-center mr-3">
                                             <Text className="text-white text-[10px] font-bold">!</Text>
                                         </View>
                                         <Text className="text-red-600 dark:text-red-400 text-sm font-medium flex-1">
-                                            {error}
+                                            {formErrors.root.message}
                                         </Text>
                                     </View>
                                 )}
 
                                 {/* Register Button */}
                                 <TouchableOpacity
-                                    className={`w-full ${isLoading ? 'bg-[#4169E1]/70' : 'bg-[#4169E1]'} rounded-xl py-4 mt-6 flex-row items-center justify-center shadow-lg active:opacity-90`}
-                                    onPress={handleRegister}
+                                    className={`w-full ${isLoading ? 'bg-pulse-ultramarineBlue/70' : 'bg-pulse-ultramarineBlue'} rounded-xl py-4 mt-6 flex-row items-center justify-center shadow-lg active:opacity-90`}
+                                    onPress={handleSubmit(onSubmit)}
                                     activeOpacity={0.8}
                                     disabled={isLoading}
                                 >
@@ -306,7 +316,7 @@ const RegisterScreen = ({ onRegister, onGoToLogin, isLoading, error, fieldErrors
                                     Already have an account?{' '}
                                 </Text>
                                 <TouchableOpacity onPress={onGoToLogin}>
-                                    <Text className="text-[#4169E1] font-bold text-sm">
+                                    <Text className="text-pulse-ultramarineBlue font-bold text-sm">
                                         Log In
                                     </Text>
                                 </TouchableOpacity>

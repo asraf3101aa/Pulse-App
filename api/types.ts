@@ -13,10 +13,16 @@ export interface ApiResponse<T> {
     error?: string;
 }
 export interface User {
-    id: string;
+    id: number;
+    username: string;
+    firstName: string;
+    lastName?: string;
     email: string;
-    name: string;
-    role?: string;
+    isActive: boolean;
+    dateJoined: string;
+    phoneNumber?: string;
+    isDeleted: boolean;
+    updatedAt: string;
 }
 
 export interface AuthTokens {
@@ -42,3 +48,37 @@ export interface RegisterCredentials {
     lastName?: string;
     phoneNumber?: string;
 }
+
+export interface Thread {
+    id: string;
+    title: string;
+    content: string;
+    author: Partial<User>;
+    createdAt: string;
+    likeCount: number;
+    commentCount: number;
+    subscriberCount: number;
+    isLiked: boolean;
+    isSubscribed: boolean;
+    isVerified?: boolean;
+    hasImage?: boolean;
+    imageUrl?: string;
+}
+
+export interface CreateThreadInput {
+    title: string;
+    content: string;
+    imageUrl?: string;
+}
+
+export interface PaginatedResponse<T> {
+    items: T[];
+    meta: {
+        totalItems: number;
+        itemCount: number;
+        itemsPerPage: number;
+        totalPages: number;
+        currentPage: number;
+    };
+}
+

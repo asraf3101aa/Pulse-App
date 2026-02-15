@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pulse Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b3bee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101222",
+                        "surface-dark": "#1a1d35",
+                        "danger": "#ff453a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex justify-center">
+    <!-- Phone Container (Simulating Mobile) -->
+    <div
+        class="w-full max-w-md min-h-screen bg-background-light dark:bg-background-dark flex flex-col relative overflow-hidden">
+        <!-- Header -->
+        <header
+            class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 ios-blur border-b border-primary/10 px-4 py-4 flex items-center">
+            <button class="p-2 -ml-2 hover:bg-primary/10 rounded-full transition-colors">
+                <span class="material-icons-round text-primary">arrow_back_ios_new</span>
+            </button>
+            <h1 class="flex-1 text-center text-lg font-bold tracking-tight mr-8">Settings</h1>
+        </header>
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto pb-32">
+            <!-- Account Section -->
+            <div class="mt-6 px-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2 ml-2">Account</h2>
+                <div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-primary/5">
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">person_outline</span>
+                        <span class="flex-1 text-left font-medium">Profile Info</span>
+                        <span
+                            class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                    <div class="h-px bg-primary/5 mx-4"></div>
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">lock_outline</span>
+                        <span class="flex-1 text-left font-medium">Password &amp; Security</span>
+                        <span
+                            class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                    <div class="h-px bg-primary/5 mx-4"></div>
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">verified_user</span>
+                        <span class="flex-1 text-left font-medium">Privacy</span>
+                        <span
+                            class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Preferences Section -->
+            <div class="mt-8 px-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2 ml-2">Preferences</h2>
+                <div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-primary/5">
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">notifications_none</span>
+                        <span class="flex-1 text-left font-medium">Notifications</span>
+                        <span
+                            class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                    <div class="h-px bg-primary/5 mx-4"></div>
+                    <div class="flex items-center p-4">
+                        <span class="material-icons-round text-primary/80 mr-3">dark_mode</span>
+                        <span class="flex-1 font-medium">Dark Mode</span>
+                        <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
+                            <span
+                                class="inline-block h-4 w-4 translate-x-6 transform rounded-full bg-white transition"></span>
+                        </div>
+                    </div>
+                    <div class="h-px bg-primary/5 mx-4"></div>
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">translate</span>
+                        <span class="flex-1 text-left font-medium">Language</span>
+                        <div class="flex items-center gap-1">
+                            <span class="text-sm text-slate-400">English</span>
+                            <span
+                                class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <!-- Support Section -->
+            <div class="mt-8 px-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2 ml-2">Support</h2>
+                <div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-primary/5">
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">help_outline</span>
+                        <span class="flex-1 text-left font-medium">Help Center</span>
+                        <span
+                            class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                    <div class="h-px bg-primary/5 mx-4"></div>
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">description</span>
+                        <span class="flex-1 text-left font-medium">Terms of Service</span>
+                        <span
+                            class="material-icons-round text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                    <div class="h-px bg-primary/5 mx-4"></div>
+                    <button class="w-full flex items-center p-4 hover:bg-primary/5 transition-colors group">
+                        <span class="material-icons-round text-primary/80 mr-3">info</span>
+                        <span class="flex-1 text-left font-medium">About Pulse</span>
+                        <span class="text-sm text-slate-400 mr-1">v2.4.0</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Log Out Action -->
+            <div class="mt-10 px-4 mb-8">
+                <button
+                    class="w-full py-4 px-6 bg-danger/10 hover:bg-danger/20 text-danger font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                    <span class="material-icons-round">logout</span>
+                    Log Out
+                </button>
+                <p class="text-center text-xs text-slate-500 mt-4">Logged in as @alex_walker</p>
+            </div>
+        </main>
+        <!-- Bottom Navigation Bar -->
+        <nav
+            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-background-light/90 dark:bg-background-dark/90 ios-blur border-t border-primary/10 px-6 py-3 flex justify-between items-center z-50">
+            <button class="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-icons-round">home</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-icons-round">search</span>
+            </button>
+            <button
+                class="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white shadow-lg shadow-primary/30 -mt-8 border-4 border-background-light dark:border-background-dark">
+                <span class="material-icons-round">add</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-icons-round">notifications</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-primary">
+                <div class="w-6 h-6 rounded-full overflow-hidden border-2 border-primary">
+                    <img class="w-full h-full object-cover" data-alt="User profile avatar smiling businessman"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR6YMK7vWDZ9w6tSCETbwfu-y3t7LTnPrd77LT2VIhvt30tn94dIDcYPKWwevMYTaCH08yrY0v5rBNFp5nKNXvEjHfu4N_tlz1RmmtJD3wRg5BJ6-rLEGnLd4zZBiAqOQsGdyBJOhmevrpsKoLfGuNoM3dD6ae2t0i8yKezJtYeorLahBZqSlTeHIZF9BPDCqv6oYkUDvIcr1R1GeH7t0rn3hDp5t3pD_x8D8lT7zXUwWCNl5tP0eyoUpwGildRdr1FcempqpfJbs" />
+                </div>
+            </button>
+        </nav>
+        <!-- Home Indicator -->
+        <div
+            class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-300 dark:bg-slate-700 rounded-full z-[60]">
+        </div>
+    </div>
+</body>
+
+</html>
